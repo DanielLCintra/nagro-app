@@ -3,8 +3,24 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import http from './service/http'
 
+import Toast from './components/Toast.vue'
+import Loading from './components/Loading.vue'
+import ConfirmDialog from './components/ConfirmDialog.vue'
+
+import './mixins'
+
+Vue.prototype.$http = http
 Vue.config.productionTip = false
+
+function registerGlobalComponents() {
+  Vue.component('confirm-dialog', ConfirmDialog)
+  Vue.component('loading', Loading)
+  Vue.component('toast', Toast)
+}
+
+registerGlobalComponents()
 
 new Vue({
   router,
