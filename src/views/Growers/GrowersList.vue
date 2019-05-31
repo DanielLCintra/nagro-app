@@ -109,7 +109,8 @@
               :loading="loading"
               :search="searchFieldText"
               no-data-text="Sem dados para exibir"
-              no-results-text="Nenhum registro foi encontrado">
+              no-results-text="Nenhum registro foi encontrado"
+            >
               <template
                 slot="items"
                 slot-scope="props"
