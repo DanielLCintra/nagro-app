@@ -21,7 +21,7 @@
       <v-data-table
         :headers="growerHeaders"
         :items="growersCollection"
-        :rows-per-page-items="[5, 10, 20, 40]"
+        :rows-per-page-items="[10, 20, 40]"
         :loading="loading"
         :search="searchFieldText"
         no-data-text="Sem dados para exibir"
@@ -223,7 +223,11 @@ export default {
   },
 
   mounted() {
-    this.getAll(1, 10)
+    // this.getAll()
+
+    this.$bus.$on('grower-created', ({ grower }) => {
+      this.growersCollection.push(grower)
+    })
   },
 
   methods: {
@@ -278,7 +282,6 @@ export default {
       this.growerPropertiesCollection = this.properties.filter((property) => {
         return property.growerId === props.item.id
       })
-      console.log(this.growerPropertiesCollection)
     }
   }
 }

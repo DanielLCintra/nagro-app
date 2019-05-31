@@ -12,6 +12,8 @@ import ConfirmDialog from './components/ConfirmDialog.vue'
 import './filters/cpfFilter'
 import './mixins'
 
+import EventBus from './plugins/event-bus'
+
 Vue.prototype.$http = http
 Vue.config.productionTip = false
 
@@ -20,6 +22,8 @@ function registerGlobalComponents() {
   Vue.component('loading', Loading)
   Vue.component('toast', Toast)
 }
+
+Vue.use(EventBus)
 
 registerGlobalComponents()
 

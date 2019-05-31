@@ -55,6 +55,7 @@
                 color="blue accent-3"
                 outline
                 required
+                :mask="'###.###.###-##'"
               />
             </v-flex>
           </v-layout>
@@ -140,14 +141,25 @@ export default {
 
   methods: {
     handleSubmit() {
+      if (this.grower.name === null) {
+        this.showToast('Você precisa informar um nome', ToastType.WARNING)
+        return
+      }
+
+      if (this.grower.cpf === null) {
+        this.showToast('Você precisa informar um cpf', ToastType.WARNING)
+        return
+      }
+
       this.loading = true
       this.rules = []
 
       this
         .$http[this.httpVerb](this.apiUrl, this.grower)
-        .then(() => {
+        .then(({ data }) => {
           this.showToast(this.successMessage, ToastType.SUCCESS)
-          this.goToRoute('growers.list')
+          this.$bus.$emit('grower-created', { grower: data })
+          this.$router.push({ name: 'growers.list' })
         })
         .catch(({ response }) => {
           this.rules = response.data.errors
