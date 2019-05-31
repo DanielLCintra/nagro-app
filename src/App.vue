@@ -1,5 +1,76 @@
 <template>
   <v-app>
+    <v-navigation-drawer
+      v-model="drawer"
+      fixed
+      clipped
+      app
+    >
+      <v-list dense>
+        <template
+          v-for="(item, itemIndex) in items"
+        >
+          <v-list-group
+            v-if="item.children"
+            :key="itemIndex"
+            v-model="item.model"
+            no-action
+          >
+            <v-list-tile
+              slot="activator"
+            >
+              <v-list-tile-action>
+                <v-icon>{{ item.model ? item.icon : item['icon-alt'] }}</v-icon>
+              </v-list-tile-action>
+
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <div class="menu-text">
+                    {{ item.text }}
+                  </div>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-list-tile
+              v-for="(child, childIndex) in item.children"
+              :key="childIndex"
+              :to="child.href"
+              :disabled="child.disabled"
+            >
+              <v-list-tile-action v-if="child.icon">
+                <v-icon>{{ child.icon }}</v-icon>
+              </v-list-tile-action>
+
+              <v-list-tile-content class="ml-4">
+                <v-list-tile-title>
+                  {{ child.text }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-group>
+
+          <v-list-tile
+            v-else
+            :key="itemIndex"
+            :to="item.href"
+          >
+            <v-list-tile-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <div class="menu-text">
+                  {{ item.text }}
+                </div>
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
+      </v-list>
+    </v-navigation-drawer>
+
     <v-toolbar
       dark
       clipped-left
@@ -7,6 +78,8 @@
       color="blue darken-2"
       fixed
     >
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+
       <v-toolbar-title class="ml-0 pl-3">
         <span class="font-weight-light">NAGRO APP</span>
       </v-toolbar-title>
@@ -69,7 +142,7 @@
     </v-toolbar>
 
     <v-content>
-      <growers-list />
+      <router-view/>
     </v-content>
   </v-app>
 </template>
@@ -77,39 +150,28 @@
 <script>
 import { mapActions } from 'vuex'
 import Avatar from 'vue-avatar'
-import GrowersList from './views/Growers/GrowersList.vue'
-import ToastType from './support/ToastType'
 
 export default {
   name: 'App',
 
   components: {
-    GrowersList,
     Avatar
   },
 
   data: () => ({
-    text: ''
+    drawer: null,
+    text: '',
+    items: [
+      {
+        icon: 'person_add',
+        text: 'Produtores',
+        href: '/growers'
+      }
+    ]
   }),
 
-  mounted() {
-    this.getProperties()
-  },
-
   methods: {
-    ...mapActions(['setProperties', 'enableSearchField', 'setSearchFieldText',]),
-
-    getProperties() {
-      this.$http
-        .get('/properties')
-        .then(({ data }) => {
-          this.setProperties(data)
-          this.showToast('Propriedas carregadas com sucesso.', ToastType.SUCCESS)
-        })
-        .catch(() => {
-          this.showToast('Ocorreu um erro ao buscar as propriedades.', ToastType.ERROR)
-        })
-    },
+    ...mapActions(['enableSearchField', 'setSearchFieldText']),
 
     setSearchValue() {
       this.setSearchFieldText(this.text)

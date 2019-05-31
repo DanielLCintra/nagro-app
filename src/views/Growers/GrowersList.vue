@@ -204,7 +204,7 @@ export default {
       }
     ],
     propertyHeaders: [
-      { text: 'Nome', value: 'name', align: 'left' },
+      { text: 'Propriedade', value: 'name', align: 'left' },
       { text: 'Área total', value: 'total_area', align: 'left' },
       { text: 'Cidade', value: 'city', align: 'left' },
       {
