@@ -11,7 +11,7 @@
       message="O produtor será apagado definitivamente e não poderá mais ser utilizado."
     />
 
-    <v-card>
+    <v-card flat>
       <v-card-title>
         <h3 class="headline mb-0">
           Produtores
@@ -19,7 +19,7 @@
       </v-card-title>
 
       <v-data-table
-        :headers="headers"
+        :headers="growerHeaders"
         :items="growersCollection"
         :rows-per-page-items="[5, 10, 20, 40]"
         :loading="loading"
@@ -47,30 +47,117 @@
                 justify-space-between
                 align-center
               >
-                <v-btn
-                  :to="{ name: 'growers.update', params: { id: props.item.id } }"
-                  flat
-                  icon
-                >
-                  <v-icon
-                    class="blue-grey--text text--darken-2"
+                <v-tooltip bottom>
+                  <v-btn
+                    slot="activator"
+                    flat
+                    icon
+                    @click="showGrowerProperties(props)"
                   >
-                    edit
-                  </v-icon>
-                </v-btn>
+                    <v-icon
+                      class="blue-grey--text text--darken-2"
+                    >
+                      store
+                    </v-icon>
+                  </v-btn>
+                  <span>{{ props.expanded ? 'Esconder' : 'Mostrar' }} propriedades</span>
+                </v-tooltip>
 
-                <v-btn
-                  flat
-                  icon
-                  @click.native="requestDestroyConfirmation(props.item)"
-                >
-                  <v-icon class="blue-grey--text text--darken-2">
-                    delete
-                  </v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <v-btn
+                    slot="activator"
+                    :to="{ name: 'growers.update', params: { id: props.item.id } }"
+                    flat
+                    icon
+                  >
+                    <v-icon
+                      class="blue-grey--text text--darken-2"
+                    >
+                      edit
+                    </v-icon>
+                  </v-btn>
+                  <span>Editar</span>
+                </v-tooltip>
+
+                <v-tooltip bottom>
+                  <v-btn
+                    slot="activator"
+                    flat
+                    icon
+                    @click.native="requestDestroyConfirmation(props.item)"
+                  >
+                    <v-icon class="blue-grey--text text--darken-2">
+                      delete
+                    </v-icon>
+                  </v-btn>
+                  <span>Excluir</span>
+                </v-tooltip>
               </v-layout>
             </td>
           </tr>
+        </template>
+
+        <template
+          slot="expand"
+          slot-scope="props"
+        >
+          <v-card>
+            <v-data-table
+              :headers="propertyHeaders"
+              :items="growerPropertiesCollection"
+              :rows-per-page-items="[5, 10, 20, 40]"
+              :loading="loading"
+              :search="searchFieldText"
+              no-data-text="Sem dados para exibir"
+              no-results-text="Nenhum registro foi encontrado">
+              <template
+                slot="items"
+                slot-scope="props"
+              >
+                <tr>
+                  <td>{{ props.item.name }}</td>
+                  <td>{{ props.item.total_area }}</td>
+                  <td>{{ props.item.city }}</td>
+                  <td width="100">
+                    <v-layout
+                      justify-space-between
+                      align-center
+                    >
+                      <v-tooltip bottom>
+                        <v-btn
+                          slot="activator"
+                          :to="{ name: 'growers.update', params: { id: props.item.id } }"
+                          flat
+                          icon
+                        >
+                          <v-icon
+                            class="blue-grey--text text--darken-2"
+                          >
+                            edit
+                          </v-icon>
+                        </v-btn>
+                        <span>Editar</span>
+                      </v-tooltip>
+
+                      <v-tooltip bottom>
+                        <v-btn
+                          slot="activator"
+                          flat
+                          icon
+                          @click.native="requestDestroyConfirmation(props.item)"
+                        >
+                          <v-icon class="blue-grey--text text--darken-2">
+                            delete
+                          </v-icon>
+                        </v-btn>
+                        <span>Excluir</span>
+                      </v-tooltip>
+                    </v-layout>
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-card>
         </template>
       </v-data-table>
     </v-card>
@@ -102,10 +189,23 @@ export default {
   },
 
   data: () => ({
-    headers: [
+    companies: [{
+      code: '1',
+      name: 'teste'
+    }],
+    growerPropertiesCollection: [],
+    growerHeaders: [
       { text: '', value: '', align: 'left' },
+      { text: 'Nome', value: 'name', align: 'left', sortable: true },
+      { text: 'CPF', value: 'cpf', align: 'left', sortable: true },
+      {
+        text: '', value: '', align: 'right', sortable: false
+      }
+    ],
+    propertyHeaders: [
       { text: 'Nome', value: 'name', align: 'left' },
-      { text: 'CPF', value: 'cpf', align: 'left' },
+      { text: 'Área total', value: 'total_area', align: 'left' },
+      { text: 'Cidade', value: 'city', align: 'left' },
       {
         text: '', value: '', align: 'right', sortable: false
       }
@@ -114,12 +214,11 @@ export default {
       type: ''
     },
     loading: false,
-    productsCollection: [],
     growersCollection: []
   }),
 
   computed: {
-    ...mapState(['searchFieldText'])
+    ...mapState(['searchFieldText', 'properties'])
   },
 
   mounted() {
@@ -168,6 +267,17 @@ export default {
       if (index !== -1) {
         this.growersCollection.splice(index, 1)
       }
+    },
+
+    showGrowerProperties(props) {
+      props.expanded = !props.expanded
+
+      this.growerPropertiesCollection = []
+
+      this.growerPropertiesCollection = this.properties.filter((property) => {
+        return property.growerId === props.item.id
+      })
+      console.log(this.growerPropertiesCollection)
     }
   }
 }

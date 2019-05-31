@@ -14,7 +14,9 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import GrowersList from './views/Growers/GrowersList.vue'
+import ToastType from './support/ToastType'
 
 export default {
   name: 'App',
@@ -23,21 +25,22 @@ export default {
     GrowersList
   },
 
-  data() {
-    return {
-      list: []
-    }
-  },
-
   mounted() {
-    this.getGrowers()
+    this.getProperties()
   },
 
   methods: {
-    getGrowers() {
-      this.$http.get('/grower')
-        .then((response) => {
-          this.list = response
+    ...mapActions(['setProperties']),
+
+    getProperties() {
+      this.$http
+        .get('/properties')
+        .then(({ data }) => {
+          this.setProperties(data)
+          this.showToast('Propriedas carregadas com sucesso.', ToastType.SUCCESS)
+        })
+        .catch(() => {
+          this.showToast('Ocorreu um erro ao buscar as propriedades.', ToastType.ERROR)
         })
     }
   }
