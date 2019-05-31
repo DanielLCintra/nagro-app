@@ -9,6 +9,7 @@ import Toast from './components/Toast.vue'
 import Loading from './components/Loading.vue'
 import ConfirmDialog from './components/ConfirmDialog.vue'
 
+import './filters/cpfFilter'
 import './mixins'
 
 Vue.prototype.$http = http

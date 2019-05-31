@@ -41,7 +41,7 @@
               />
             </td>
             <td>{{ props.item.name }}</td>
-            <td>{{ props.item.cpf }}</td>
+            <td>{{ props.item.cpf | cpfFormat }}</td>
             <td width="100">
               <v-layout
                 justify-space-between
