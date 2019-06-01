@@ -5,8 +5,8 @@ https://my-json-server.typicode.com/pedroskakum/fake-api/
 
 Abaixo instruções para rodar o projeto.
 
-## Para que o projeto funcione se faz nessessário criar um arquivo
-## ".env" baseado no ".env.example" passando a url da api.
+Para que o projeto funcione se faz nessessário criar um arquivo
+".env" baseado no ".env.example" passando a url da api.
 
 ## Project setup
 ```
