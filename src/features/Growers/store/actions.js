@@ -15,10 +15,13 @@ export default {
     }
   },
 
-  async updateGrower({ commit }, grower) {
+  async updateGrower({ commit, state }, grower) {
     const { data } = await http.put(`/grower/${grower.id}`, grower)
     if (data.length > 0) {
-      commit('UPDATE_GROWER', data)
+      const index = state.list.findIndex(listGrower => listGrower.id === grower.id)
+      if (index !== -1) {
+        commit('UPDATE_GROWER', { index, grower })
+      }
     }
   },
 

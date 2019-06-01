@@ -171,7 +171,7 @@ export default {
           this.showToast(this.successMessage, ToastType.SUCCESS)
           setTimeout(() => {
             this.$router.push({ name: 'growers.list' })
-          }, 3000)
+          }, 1000)
         })
         .catch(() => {
           this.showToast('Houve um erro ao adicionar o produtor.', ToastType.ERROR)
