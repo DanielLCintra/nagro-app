@@ -6,7 +6,7 @@ export default class GrowerModel extends BaseModel {
     super()
 
     this.id = null
-    this.nome = null
+    this.name = null
     this.cpf = null
     this.properties = [new PropertyModel()]
   }

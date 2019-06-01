@@ -81,7 +81,11 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
 
       <v-toolbar-title class="ml-0 pl-3">
-        <span class="font-weight-light">NAGRO APP</span>
+        <router-link to="/">
+          <span class="font-weight-light">
+            NAGRO APP
+          </span>
+        </router-link>
       </v-toolbar-title>
 
       <v-spacer/>
@@ -159,7 +163,7 @@ export default {
   },
 
   data: () => ({
-    drawer: null,
+    drawer: false,
     text: '',
     items: [
       {
@@ -179,3 +183,10 @@ export default {
   }
 }
 </script>
+
+<style>
+span.font-weight-light {
+  color: white;
+  font-weight: bold;
+}
+</style>

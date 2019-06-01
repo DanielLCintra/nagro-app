@@ -21,7 +21,7 @@ const routes = {
       name: 'growers.update',
       component: GrowersRegister,
       props: route => ({
-        customerId: route.params.id
+        growerId: route.params.id
       })
     }
   ]

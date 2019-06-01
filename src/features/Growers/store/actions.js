@@ -8,7 +8,19 @@ export default {
     }
   },
 
-  addGrower() {},
+  async addGrower({ commit }, grower) {
+    const response = await http.post('/grower', grower)
+    if (response) {
+      commit('ADD_GROWER', grower)
+    }
+  },
+
+  async updateGrower({ commit }, grower) {
+    const { data } = await http.put(`/grower/${grower.id}`, grower)
+    if (data.length > 0) {
+      commit('UPDATE_GROWER', data)
+    }
+  },
 
   async removeGrower({ commit, state }, id) {
     const response = await http.delete(`/grower/${id}`)
@@ -18,7 +30,5 @@ export default {
         commit('REMOVE_GROWER', index)
       }
     }
-  },
-
-  updateGrower() {},
+  }
 }

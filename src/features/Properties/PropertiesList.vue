@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'PropertiesList',
@@ -93,12 +93,10 @@ export default {
   }),
 
   computed: {
-    ...mapState([
-      'properties', ['list']
-    ]),
+    ...mapGetters('properties', ['getGrowerPropertiesById']),
 
     propertiesList() {
-      return this.$store.getters.getGrowerPropertiesById(this.growerId)
+      return this.getGrowerPropertiesById(this.growerId)
     }
   }
 }

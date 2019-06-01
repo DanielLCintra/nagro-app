@@ -8,7 +8,7 @@
     <v-card>
       <v-card-title primary-title>
         <h3 class="headline mb-0">
-          Produtores
+          {{ title }}
         </h3>
       </v-card-title>
 
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-
+import { mapGetters, mapActions } from 'vuex'
 import Avatar from 'vue-avatar'
 import ToastType from '../../support/ToastType'
 import GrowerModel from '../../models/GrowerModel'
@@ -103,7 +103,7 @@ export default {
   props: {
     growerId: {
       type: [String, Number],
-      default: ''
+      default: null
     }
   },
 
@@ -113,16 +113,14 @@ export default {
   }),
 
   computed: {
+    ...mapGetters('growers', ['getGrowerById']),
+
     isEditing() {
       return !!this.growerId
     },
 
-    apiUrl() {
-      return this.isEditing ? `/grower/${this.growerId}` : '/grower'
-    },
-
-    httpVerb() {
-      return this.isEditing ? 'put' : 'post'
+    title() {
+      return this.isEditing ? 'Editor produtor' : 'Inserir produtor'
     },
 
     successMessage() {
@@ -132,11 +130,21 @@ export default {
     }
   },
 
-  created() {
-    this.isEditing
+  watch: {
+    growerId: {
+      handler(value) {
+        if (value) {
+          const grower = this.getGrowerById(value)
+          this.grower = grower
+        }
+      },
+      immediate: true
+    }
   },
 
   methods: {
+    ...mapActions('growers', ['addGrower', 'updateGrower']),
+
     handleSubmit() {
       if (this.grower.name === null) {
         this.showToast('Você precisa informar um nome', ToastType.WARNING)
@@ -149,23 +157,46 @@ export default {
       }
 
       this.loading = true
-      this.rules = []
 
-      this
-        .$http[this.httpVerb](this.apiUrl, this.grower)
-        .then(({ data }) => {
+      if (this.isEditing) {
+        this.update()
+      } else {
+        this.insert()
+      }
+    },
+
+    update() {
+      this.updateGrower(this.grower)
+        .then(() => {
           this.showToast(this.successMessage, ToastType.SUCCESS)
-          this.$bus.$emit('grower-created', { grower: data })
-          this.$router.push({ name: 'growers.list' })
+          setTimeout(() => {
+            this.$router.push({ name: 'growers.list' })
+          }, 3000)
         })
-        .catch(({ response }) => {
-          this.rules = response.data.errors
-          this.showToast(response.data.message, ToastType.ERROR)
+        .catch(() => {
+          this.showToast('Houve um erro ao adicionar o produtor.', ToastType.ERROR)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+
+    insert() {
+      this.addGrower(this.grower)
+        .then(() => {
+          this.showToast(this.successMessage, ToastType.SUCCESS)
+          setTimeout(() => {
+            this.$router.push({ name: 'growers.list' })
+          }, 1000)
+        })
+        .catch(() => {
+          this.showToast('Houve um erro ao adicionar o produtor.', ToastType.ERROR)
         })
         .finally(() => {
           this.loading = false
         })
     }
+
   }
 }
 </script>

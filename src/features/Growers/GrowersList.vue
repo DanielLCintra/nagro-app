@@ -160,31 +160,8 @@ export default {
     ])
   },
 
-  mounted() {
-    this.getAll()
-
-    this.$bus.$on('grower-created', ({ grower }) => {
-      this.growersCollection.push(grower)
-    })
-  },
-
   methods: {
     ...mapActions('growers', ['getGrowers', 'removeGrower']),
-
-    getAll() {
-      this.loading = true
-
-      this.getGrowers()
-        .then(() => {
-          this.showToast('Produtores carregados.', ToastType.SUCCESS)
-        })
-        .catch(() => {
-          this.showToast('Ocorreu um erro ao buscar os produtores.', ToastType.ERROR)
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
 
     requestDestroyConfirmation(item) {
       this.$refs.confirm.show(() => {

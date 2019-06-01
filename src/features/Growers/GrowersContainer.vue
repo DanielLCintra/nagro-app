@@ -13,10 +13,13 @@ export default {
 
   mounted() {
     this.getProperties()
+    this.getGrowers()
   },
 
   methods: {
-    ...mapActions(['setProperties']),
+    ...mapActions('growers', ['getGrowers']),
+
+    ...mapActions('properties', ['setProperties']),
 
     getProperties() {
       this.$http
