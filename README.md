@@ -1,10 +1,10 @@
 # Nagro app
 
-Projeto criado para simular um crud de produtores baseado na api:
-https://my-json-server.typicode.com/pedroskakum/fake-api/
+#### Projeto criado para simular um crud de produtores baseado na api:
+#### https://my-json-server.typicode.com/pedroskakum/fake-api/
 
-Para que o projeto funcione se faz nessessário criar um arquivo
-".env" baseado no ".env.example" passando a url da api.
+#### Para que o projeto funcione se faz nessessário criar um arquivo
+#### ".env" baseado no ".env.example" passando a url da api.
 
 Abaixo instruções para rodar o projeto.
 
@@ -33,5 +33,11 @@ npm run test
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Bibliotecas utilizadas
+
+* Vue.js
+* Vuetify
+* Vue Router
+* Vuex
+* Axios
+* vue-avatar
