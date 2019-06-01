@@ -6,7 +6,7 @@
 #### Para que o projeto funcione se faz nessessário criar um arquivo ".env" baseado no ".env.example" passando a url da api.
 
 
-##instruções para rodar o projeto.
+## Instruções para rodar o projeto.
 
 ### Project setup
 ```
