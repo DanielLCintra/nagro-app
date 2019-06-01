@@ -19,8 +19,8 @@
       </v-card-title>
 
       <v-data-table
-        :headers="growerHeaders"
-        :items="growersCollection"
+        :headers="headers"
+        :items="growers.list"
         :rows-per-page-items="[10, 20, 40]"
         :loading="loading"
         :search="searchFieldText"
@@ -102,62 +102,9 @@
           slot-scope="props"
         >
           <v-card>
-            <v-data-table
-              :headers="propertyHeaders"
-              :items="growerPropertiesCollection"
-              :rows-per-page-items="[5, 10, 20, 40]"
-              :loading="loading"
-              :search="searchFieldText"
-              no-data-text="Sem dados para exibir"
-              no-results-text="Nenhum registro foi encontrado"
-            >
-              <template
-                slot="items"
-                slot-scope="props"
-              >
-                <tr>
-                  <td>{{ props.item.name }}</td>
-                  <td>{{ props.item.total_area }}</td>
-                  <td>{{ props.item.city }}</td>
-                  <td width="100">
-                    <v-layout
-                      justify-space-between
-                      align-center
-                    >
-                      <v-tooltip bottom>
-                        <v-btn
-                          slot="activator"
-                          :to="{ name: 'growers.update', params: { id: props.item.id } }"
-                          flat
-                          icon
-                        >
-                          <v-icon
-                            class="blue-grey--text text--darken-2"
-                          >
-                            edit
-                          </v-icon>
-                        </v-btn>
-                        <span>Editar</span>
-                      </v-tooltip>
-
-                      <v-tooltip bottom>
-                        <v-btn
-                          slot="activator"
-                          flat
-                          icon
-                          @click.native="requestDestroyConfirmation(props.item)"
-                        >
-                          <v-icon class="blue-grey--text text--darken-2">
-                            delete
-                          </v-icon>
-                        </v-btn>
-                        <span>Excluir</span>
-                      </v-tooltip>
-                    </v-layout>
-                  </td>
-                </tr>
-              </template>
-            </v-data-table>
+            <properties-list
+              :grower-id="props.item.id"
+            />
           </v-card>
         </template>
       </v-data-table>
@@ -178,24 +125,21 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Avatar from 'vue-avatar'
 import ToastType from '../../support/ToastType'
+import PropertiesList from '../Properties/PropertiesList.vue'
 
 export default {
   name: 'GrowerList',
 
   components: {
-    Avatar
+    Avatar,
+    PropertiesList
   },
 
   data: () => ({
-    companies: [{
-      code: '1',
-      name: 'teste'
-    }],
-    growerPropertiesCollection: [],
-    growerHeaders: [
+    headers: [
       { text: '', value: '', align: 'left' },
       { text: 'Nome', value: 'name', align: 'left', sortable: true },
       { text: 'CPF', value: 'cpf', align: 'left', sortable: true },
@@ -203,27 +147,21 @@ export default {
         text: '', value: '', align: 'right', sortable: false
       }
     ],
-    propertyHeaders: [
-      { text: 'Propriedade', value: 'name', align: 'left' },
-      { text: 'Área total', value: 'total_area', align: 'left' },
-      { text: 'Cidade', value: 'city', align: 'left' },
-      {
-        text: '', value: '', align: 'right', sortable: false
-      }
-    ],
     filters: {
       type: ''
     },
-    loading: false,
-    growersCollection: []
+    loading: false
   }),
 
   computed: {
-    ...mapState(['searchFieldText', 'properties'])
+    ...mapState([
+      ['searchFieldText'],
+      'growers', ['list']
+    ])
   },
 
   mounted() {
-    // this.getAll()
+    this.getAll()
 
     this.$bus.$on('grower-created', ({ grower }) => {
       this.growersCollection.push(grower)
@@ -231,13 +169,13 @@ export default {
   },
 
   methods: {
+    ...mapActions('growers', ['getGrowers', 'removeGrower']),
+
     getAll() {
       this.loading = true
 
-      this.$http
-        .get('/grower')
-        .then(({ data }) => {
-          this.growersCollection = data
+      this.getGrowers()
+        .then(() => {
           this.showToast('Produtores carregados.', ToastType.SUCCESS)
         })
         .catch(() => {
@@ -254,34 +192,24 @@ export default {
       })
     },
 
-    destroy(item) {
-      this.$http
-        .delete(`/grower/${item.id}`)
+    destroy({ id }) {
+      this.loading = true
+
+      this.removeGrower(id)
         .then(() => {
           this.showToast('Produtor excluído com sucesso!', ToastType.SUCCESS)
-          this.removeFromList(item)
         })
         .catch(() => {
           this.showToast('Ocorreu um erro ao excluir o produtor.', ToastType.ERROR)
         })
-    },
-
-    removeFromList(item) {
-      const index = this.growersCollection.findIndex(grower => grower.id === item.id)
-
-      if (index !== -1) {
-        this.growersCollection.splice(index, 1)
-      }
+        .finally(() => {
+          this.loading = false
+        })
     },
 
     showGrowerProperties(props) {
       props.expanded = !props.expanded
-
-      this.growerPropertiesCollection = []
-
-      this.growerPropertiesCollection = this.properties.filter((property) => {
-        return property.growerId === props.item.id
-      })
+      this.$bus.$emit('get-grower-properties', { id: props.item.id })
     }
   }
 }

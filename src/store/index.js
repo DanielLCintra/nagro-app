@@ -1,20 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import growers from '../features/Growers/store'
+import properties from '../features/Properties/store'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+
+  modules: {
+    growers,
+    properties
+  },
+
   state: {
-    properties: [],
     searchFieldText: null,
     isSearchFieldEnabled: false
   },
 
   mutations: {
-    SET_PROPERTIES(state, properties) {
-      state.properties = properties
-    },
-
     ENABLE_SEARCH_FIELD(state, payload) {
       state.isSearchFieldEnabled = payload
     },
@@ -25,10 +28,6 @@ export default new Vuex.Store({
   },
 
   actions: {
-    setProperties({ commit }, properties) {
-      commit('SET_PROPERTIES', properties)
-    },
-
     enableSearchField({ commit }, payload) {
       commit('ENABLE_SEARCH_FIELD', payload)
     },

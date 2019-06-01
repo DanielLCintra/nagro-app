@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import growersRoutes from './views/Growers/routes'
+import growersRoutes from './features/Growers/routes'
 
 Vue.use(Router)
 

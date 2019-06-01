@@ -91,6 +91,7 @@
 
 import Avatar from 'vue-avatar'
 import ToastType from '../../support/ToastType'
+import GrowerModel from '../../models/GrowerModel'
 
 export default {
   name: 'GrowersRegister',
@@ -108,11 +109,7 @@ export default {
 
   data: () => ({
     loading: false,
-    grower: {
-      id: null,
-      name: null,
-      cpf: null
-    }
+    grower: new GrowerModel()
   }),
 
   computed: {
