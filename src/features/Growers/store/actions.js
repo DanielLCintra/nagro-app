@@ -25,7 +25,7 @@ export default {
   async removeGrower({ commit, state }, id) {
     const response = await http.delete(`/grower/${id}`)
     if (response) {
-      const index = state.growers.findIndex(grower => grower.id === id)
+      const index = state.list.findIndex(grower => grower.id === id)
       if (index !== -1) {
         commit('REMOVE_GROWER', index)
       }
